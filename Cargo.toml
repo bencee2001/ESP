@@ -2,6 +2,7 @@
 edition      = "2024"
 name         = "esp_test"
 rust-version = "1.88"
+autobins     = false
 version      = "0.1.0"
 
 [[bin]]
@@ -11,13 +12,51 @@ path = "./src/bin/main.rs"
 [dependencies]
 esp-hal = { version = "~1.1.0", features = ["esp32", "unstable"] }
 
+esp-rtos = { version = "0.3.0", features = [
+  "embassy",
+  "esp-alloc",
+  "esp-radio",
+  "esp32",
+] }
 
 esp-bootloader-esp-idf = { version = "0.5.0", features = ["esp32"] }
 
+embassy-net = { version = "0.9.1", features = [
+  "dhcpv4",
+  "medium-ethernet",
+  "tcp",
+  "udp",
+] }
+embedded-io = "0.7.1"
+embedded-io-async = "0.7.0"
+esp-alloc = "0.10.0"
+embassy-executor = { version = "0.10.0", features = [] }
+embassy-time = "0.5.0"
+esp-radio = { version = "0.18.0", features = [
+  "esp-alloc",
+  "esp32",
+  "unstable",
+  "wifi",
+] }
+smoltcp = { version = "0.13.0", default-features = false, features = [
+  "medium-ethernet",
+  "multicast",
+  "proto-dhcpv4",
+  "proto-dns",
+  "proto-ipv4",
+  "socket-dns",
+  "socket-icmp",
+  "socket-raw",
+  "socket-tcp",
+  "socket-udp",
+] }
+
 critical-section = "1.2.0"
+static_cell      = "2.1.1"
 esp-println = { version = "0.17.0", features = ["esp32"] }
 embedded-hal = "1.0.0"
 ufmt = "0.2.0"
+heapless = "0.8"
 
 
 # For fine tuning these settings, please refer to https://doc.rust-lang.org/cargo/reference/profiles.html
@@ -32,8 +71,3 @@ debug         = 2     # prefer slower builds but better debugging experience
 lto           = 'fat'
 opt-level     = 's'
 
-[build]
-target = "xtensa-esp32s3-none-elf"
-
-[target.xtensa-esp32s3-none-elf]
-runner = "espflash flash --monitor"

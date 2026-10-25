@@ -24,3 +24,7 @@ target/
 
 # Ignore .DS_Store file in mac
 **/.DS_Store
+
+# WiFi password, never commit
+src/bin/secrets.rs
+server/readings.csv
