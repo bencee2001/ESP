@@ -4,7 +4,7 @@ target/
 
 # Editor configuration
 .vscode/
-.zed/
+# .zed/ is committed on purpose (rust-analyzer target for ESP32)
 .helix/
 .nvim.lua
 

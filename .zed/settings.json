@@ -1,0 +1,60 @@
+// Project-local Zed settings. Committed on purpose: these override the global
+// Zed settings so rust-analyzer analyses this crate for the plain ESP32
+// (xtensa-esp32-none-elf) with the `esp` toolchain. Without this, a global
+// rust-analyzer target for another chip (e.g. esp32s3) makes esp-hal's build
+// script panic, which breaks hover docs, completions and diagnostics.
+{
+  "languages": {
+    "Rust": {
+      "language_servers": ["rust-analyzer"],
+      "show_completion_documentation": true
+    }
+  },
+  "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        "cargo": {
+          // Must match .cargo/config.toml and the esp-hal `esp32` feature.
+          "target": "xtensa-esp32-none-elf",
+          // Keep rust-analyzer's artifacts in target/rust-analyzer so it never
+          // fights with `cargo build` / `cargo run` over the build lock.
+          "targetDir": true,
+          // Run build scripts (esp-hal, esp-radio, ...) so their cfgs and
+          // generated code are visible to the analyser.
+          "buildScripts": { "enable": true },
+          // no_std firmware: there are no tests/benches to analyse.
+          "allTargets": false,
+          "extraEnv": { "RUSTUP_TOOLCHAIN": "esp" }
+        },
+        "check": {
+          "command": "check",
+          "target": "xtensa-esp32-none-elf",
+          // `--all-targets` would try to check test harnesses, which cannot
+          // build for this target with build-std = ["core", "alloc"].
+          "allTargets": false,
+          "extraEnv": { "RUSTUP_TOOLCHAIN": "esp" }
+        },
+        "procMacro": { "enable": true },
+        "hover": {
+          "documentation": { "enable": true, "keywords": { "enable": true } },
+          "memoryLayout": { "enable": true },
+          "show": { "traitAssocItems": 5 }
+        },
+        "signatureInfo": {
+          "detail": "full",
+          "documentation": { "enable": true }
+        },
+        "completion": {
+          "fullFunctionSignatures": { "enable": true },
+          "autoimport": { "enable": true }
+        },
+        "inlayHints": {
+          "typeHints": { "enable": true },
+          "parameterHints": { "enable": true },
+          "chainingHints": { "enable": true },
+          "closingBraceHints": { "enable": true }
+        }
+      }
+    }
+  }
+}
